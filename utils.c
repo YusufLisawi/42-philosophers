@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/03 15:07:36 by yelaissa          #+#    #+#             */
+/*   Updated: 2023/03/04 13:38:06 by yelaissa         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 long long get_time(void)
@@ -49,24 +61,24 @@ void verify_args(int ac, char **av)
 void init_table(t_table *table, char **av)
 {
 	int i;
+	table->start_time = get_time();
 	table->philosophers = malloc(ft_atoi(av[1]) * sizeof(t_philo));
 	table->forks = malloc(ft_atoi(av[1]) * sizeof(pthread_mutex_t));
 	table->num_philosophers = ft_atoi(av[1]);
 	table->time_to_die = ft_atoi(av[2]);
 	table->time_to_eat = ft_atoi(av[3]);
 	table->time_to_sleep = ft_atoi(av[4]);
-	if (ft_atoi(av[5]))
+	if (av[5])
 		table->num_meals_to_eat = ft_atoi(av[5]);
 	else
 		table->num_meals_to_eat = -1;
-	table->num_finished = 0;
 	table->stop = 0;
 	i = -1;
 	while (++i < ft_atoi(av[1]))
 	{
 		if (pthread_mutex_init(&table->forks[i], NULL))
 			exit(1);
-		table->philosophers[i].id = i;
+		table->philosophers[i].id = i + 1;
 		table->philosophers[i].left_fork = i;
 		table->philosophers[i].right_fork = (i + 1) % ft_atoi(av[1]);
 		table->philosophers[i].meals = 0;

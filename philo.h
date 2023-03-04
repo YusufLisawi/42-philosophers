@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/03 15:07:32 by yelaissa          #+#    #+#             */
+/*   Updated: 2023/03/04 13:20:06 by yelaissa         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PIHLO_H
 #define PIHLO_H
 
@@ -27,7 +39,7 @@ typedef struct s_table
 	int time_to_eat;
 	int time_to_sleep;
 	int num_meals_to_eat;
-	int num_finished;
+	long long start_time;
 	int stop;
 	pthread_mutex_t *forks;
 	t_philo *philosophers;

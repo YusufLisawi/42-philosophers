@@ -1,54 +1,41 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/03 15:07:23 by yelaissa          #+#    #+#             */
+/*   Updated: 2023/03/04 13:43:27 by yelaissa         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 void *philosopher(void *arg)
 {
-	t_philo *p = (t_philo *)arg;
-	while (p->table->num_meals_to_eat == 0 || p->meals < p->table->num_meals_to_eat)
+	t_philo *ph = (t_philo *) arg;
+	
+	if (ph->id % 2 == 0)
 	{
-		// Try to pick up left fork
-		if (pthread_mutex_trylock(&p->table->forks[p->left_fork]) == 0)
-		{
-			// Left fork picked up successfully, try to pick up right fork
-			if (pthread_mutex_trylock(&p->table->forks[p->right_fork]) == 0)
-			{
-				// Right fork picked up successfully, start eating
-				printf("%lld %d is eating\n", get_time(), p->id + 1);
-				p->last_meal_time = get_time();
-				usleep(p->table->time_to_eat * 1000);
-				// Put down right fork
-				pthread_mutex_unlock(&p->table->forks[p->right_fork]);
-			}
-			// Put down left fork
-			pthread_mutex_unlock(&p->table->forks[p->left_fork]);
-		}
-		// Sleep or die
-		if (get_time() - p->last_meal_time >= p->table->time_to_die)
-		{
-			printf("%lld %d died\n", get_time(), p->id + 1);
-			pthread_mutex_unlock(&p->table->forks[p->left_fork]);
-			pthread_exit(NULL);
-		}
-		else
-		{
-			printf("%lld %d is sleeping\n", get_time(), p->id + 1);
-			usleep(p->table->time_to_sleep * 1000);
-			printf("%lld %d is thinking\n", get_time(), p->id + 1);
-		}
-		// Check if all philosophers have finished eating
-		if (p->table->num_meals_to_eat > 0)
-		{
-			pthread_mutex_lock(&p->table->forks[0]);
-			if (p->table->num_finished == p->table->num_philosophers)
-			{
-				pthread_mutex_unlock(&p->table->forks[0]);
-				p->table->stop = 1;
-				break;
-			}
-			pthread_mutex_unlock(&p->table->forks[0]);
-		}
+		printf("%lld %d is thinking\n", get_time() - ph->table->start_time, ph->id);
+		usleep(1000);
 	}
-	p->table->num_finished++;
-	pthread_exit(NULL);
+	while (ph->table->stop != 1)
+	{
+		pthread_mutex_lock(&ph->table->forks[ph->left_fork]);
+		printf("%lld %d has taken a fork\n", get_time() - ph->table->start_time, ph->id);
+		pthread_mutex_lock(&ph->table->forks[ph->right_fork]);
+		printf("%lld %d has taken a fork\n", get_time() - ph->table->start_time, ph->id);
+		printf("%lld %d is eating\n", get_time() - ph->table->start_time, ph->id);
+		usleep(ph->table->time_to_eat * 1000);
+		pthread_mutex_unlock(&ph->table->forks[ph->left_fork]);
+		pthread_mutex_unlock(&ph->table->forks[ph->right_fork]);
+		printf("%lld %d is sleeping\n", get_time() - ph->table->start_time, ph->id);
+		usleep(ph->table->time_to_sleep * 1000);
+		printf("%lld %d is thinking\n", get_time() - ph->table->start_time, ph->id);
+	}
+	return (NULL);
 }
 
 void start_dining(t_table *table)
