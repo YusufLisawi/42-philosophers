@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:32 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/03/04 13:20:06 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/03/04 17:41:52 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ typedef struct s_table
 	t_philo *philosophers;
 } t_table;
 
-long long get_time(void);
-void verify_args(int ac, char **av);
-void init_table(t_table *table, char **av);
-
+long long	get_time(void);
+int			verify_args(int ac, char **av);
+int			init_table(t_table *table, char **av);
+void		hold(t_table *table, int time);
 #endif

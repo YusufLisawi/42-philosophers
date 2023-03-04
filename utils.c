@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:36 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/03/04 13:38:06 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/03/04 17:12:32 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int ft_atoi(const char *str)
 	return (result * sign);
 }
 
-void verify_args(int ac, char **av)
+int verify_args(int ac, char **av)
 {
 	int i;
 
@@ -53,17 +53,42 @@ void verify_args(int ac, char **av)
 	while (av[i])
 	{
 		if (ft_atoi(av[i]) <= 0)
-			exit(0);
+			return (0);
 		i++;
 	}
+	return (1);
 }
 
-void init_table(t_table *table, char **av)
+
+int	init_philos(t_table *table, char **av)
 {
-	int i;
+	int	i;
+
+	i = 0;
+	while (i < ft_atoi(av[1]))
+	{
+		if (pthread_mutex_init(&table->forks[i], NULL))
+			return (0);
+		table->philosophers[i].id = i + 1;
+		table->philosophers[i].left_fork = i;
+		table->philosophers[i].right_fork = (i + 1) % ft_atoi(av[1]);
+		table->philosophers[i].meals = 0;
+		table->philosophers[i].last_meal_time = get_time();
+		table->philosophers[i].table = table;
+		i++;
+	}
+	return (1);
+}
+
+int	init_table(t_table *table, char **av)
+{
 	table->start_time = get_time();
 	table->philosophers = malloc(ft_atoi(av[1]) * sizeof(t_philo));
+	if (!table->philosophers)
+		return (0);
 	table->forks = malloc(ft_atoi(av[1]) * sizeof(pthread_mutex_t));
+	if (!table->forks)
+		return (0);
 	table->num_philosophers = ft_atoi(av[1]);
 	table->time_to_die = ft_atoi(av[2]);
 	table->time_to_eat = ft_atoi(av[3]);
@@ -73,16 +98,7 @@ void init_table(t_table *table, char **av)
 	else
 		table->num_meals_to_eat = -1;
 	table->stop = 0;
-	i = -1;
-	while (++i < ft_atoi(av[1]))
-	{
-		if (pthread_mutex_init(&table->forks[i], NULL))
-			exit(1);
-		table->philosophers[i].id = i + 1;
-		table->philosophers[i].left_fork = i;
-		table->philosophers[i].right_fork = (i + 1) % ft_atoi(av[1]);
-		table->philosophers[i].meals = 0;
-		table->philosophers[i].last_meal_time = get_time();
-		table->philosophers[i].table = table;
-	}
+	if (!init_philos(table, av))
+		return (0);
+	return (1);
 }
