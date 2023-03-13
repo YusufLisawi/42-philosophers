@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:23 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/03/04 17:54:14 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/03/13 19:57:43 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,11 @@ void	*philosopher(void *arg)
 	if (ph->id % 2 == 0)
 	{
 		printf("%lld %d is thinking\n", get_time() - ph->table->start_time, ph->id);
-		usleep(1000);
+		usleep(1500);
 	}
 	while (ph->table->stop != 1)
 	{
+		
 		eating(ph);
 		printf("%lld %d is sleeping\n", get_time() - ph->table->start_time, ph->id);
 		hold(ph->table, ph->table->time_to_sleep);
