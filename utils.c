@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:36 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/03/04 17:12:32 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/03/16 12:55:06 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,10 @@ int ft_atoi(const char *str)
 	return (result * sign);
 }
 
-int verify_args(int ac, char **av)
+int	verify_args(int ac, char **av)
 {
 	int i;
+	(void) ac;
 
 	i = 1;
 	while (av[i])

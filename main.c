@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:23 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/03/13 19:57:43 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/03/16 12:53:21 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,10 @@ void	*philosopher(void *arg)
 	if (ph->id % 2 == 0)
 	{
 		printf("%lld %d is thinking\n", get_time() - ph->table->start_time, ph->id);
-		usleep(1500);
+		hold(ph->table, 1500);
 	}
 	while (ph->table->stop != 1)
 	{
-		
 		eating(ph);
 		printf("%lld %d is sleeping\n", get_time() - ph->table->start_time, ph->id);
 		hold(ph->table, ph->table->time_to_sleep);
@@ -50,15 +49,12 @@ int	start_dining(t_table *table)
 	pthread_t	threads[table->num_philosophers];
 	int			i;
 
-	// Start philosopher threads
 	i = -1;
 	while (++i < table->num_philosophers)
 	{
 		if (pthread_create(&threads[i], NULL, philosopher, &table->philosophers[i]))
 			return (0);
 	}
-	
-	// Wait for threads to finish
 	i = -1;
 	while (++i < table->num_philosophers)
 	{
@@ -68,7 +64,7 @@ int	start_dining(t_table *table)
 	return (1);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
 	t_table	table;
 	int		i;
@@ -88,3 +84,4 @@ int main(int argc, char **argv)
 	free(table.philosophers);
 	return (0);
 }
+ 
