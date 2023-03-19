@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 17:29:48 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/03/04 17:45:25 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/03/16 13:12:26 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	hold(t_table *table, int time)
 	while (!table->stop)
 	{
 		if (get_time() - i >= time)
-			break;
+			break ;
 		usleep(45);
 	}
 }

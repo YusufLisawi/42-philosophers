@@ -6,24 +6,25 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:36 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/03/16 12:55:06 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/03/19 13:46:06 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long long get_time(void)
+long long	get_time(void)
 {
-	struct timeval tv;
+	struct timeval	tv;
+
 	gettimeofday(&tv, NULL);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-int ft_atoi(const char *str)
+int	ft_atoi(const char *str)
 {
-	int result;
-	int sign;
-	int i;
+	int	result;
+	int	sign;
+	int	i;
 
 	result = 0;
 	sign = 1;
@@ -47,9 +48,9 @@ int ft_atoi(const char *str)
 
 int	verify_args(int ac, char **av)
 {
-	int i;
-	(void) ac;
+	int	i;
 
+	(void) ac;
 	i = 1;
 	while (av[i])
 	{
@@ -59,7 +60,6 @@ int	verify_args(int ac, char **av)
 	}
 	return (1);
 }
-
 
 int	init_philos(t_table *table, char **av)
 {
