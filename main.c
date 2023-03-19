@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:23 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/03/19 19:14:17 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/03/19 19:47:19 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ void	check(t_table *table)
 			if (table->num_meals_to_eat != -1 && \
 			table->philos[i].meals >= table->num_meals_to_eat)
 				continue ;
-			if (get_time() - table->philos[i].last_meal_time > table->time_to_die)
+			if (get_time() - table->philos[i].last_meal_time >= table->time_to_die)
 			{
-				log_status("has died", table->philos[i]);
+				log_status("died", table->philos[i]);
 				pthread_mutex_lock(&table->access);
 				table->stop = 1;
 				pthread_mutex_unlock(&table->access);
