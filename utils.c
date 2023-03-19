@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:36 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/03/19 17:47:15 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/03/19 18:43:46 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,23 +48,20 @@ void	nap(t_table *table, int time)
  * Initialize the philos struct array with their respective 
  * IDs, forks, meal counts and last meal time
  * @param table The main table struct
- * @param av The list of arguments passed in the command line
  * @return 1 if initialization was successful, 0 otherwise
  **/
-int	init_philos(t_table *table, char **av)
+int	init_philos(t_table *table)
 {
 	int	i;
-	int	nphilos;
 
-	nphilos = ft_atoi(av[1]);
 	i = 0;
-	while (i < nphilos)
+	while (i < table->num_philos)
 	{
 		if (pthread_mutex_init(&table->forks[i], NULL))
 			return (0);
 		table->philos[i].id = i + 1;
 		table->philos[i].left_fork = i;
-		table->philos[i].right_fork = (i + 1) % nphilos;
+		table->philos[i].right_fork = (i + 1) % table->num_philos;
 		table->philos[i].meals = 0;
 		table->philos[i].last_meal_time = get_time();
 		table->philos[i].table = table;
@@ -82,13 +79,9 @@ int	init_philos(t_table *table, char **av)
 **/
 int	init_table(t_table *table, char **av)
 {
+	table->stop = 0;
+	table->finished = 0;
 	table->start_time = get_time();
-	table->philos = malloc(ft_atoi(av[1]) * sizeof(t_philo));
-	if (!table->philos)
-		return (0);
-	table->forks = malloc(ft_atoi(av[1]) * sizeof(pthread_mutex_t));
-	if (!table->forks)
-		return (0);
 	table->num_philos = ft_atoi(av[1]);
 	table->time_to_die = ft_atoi(av[2]);
 	table->time_to_eat = ft_atoi(av[3]);
@@ -96,9 +89,13 @@ int	init_table(t_table *table, char **av)
 	table->num_meals_to_eat = -1;
 	if (av[5])
 		table->num_meals_to_eat = ft_atoi(av[5]);
-	table->stop = 0;
-	table->finished = 0;
-	if (!init_philos(table, av))
+	table->philos = malloc(ft_atoi(av[1]) * sizeof(t_philo));
+	table->forks = malloc(ft_atoi(av[1]) * sizeof(pthread_mutex_t));
+	if (!table->philos || !table->forks)
+		return (0);
+	if (pthread_mutex_init(&table->access, NULL))
+		return (0);
+	if (!init_philos(table))
 		return (0);
 	return (1);
 }
