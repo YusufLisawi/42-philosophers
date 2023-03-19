@@ -4,13 +4,13 @@ CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror
 
-SRCS = main.c philo_utils.c utils.c 
+SRCS = main.c utilities.c utils.c 
 
 OBJS = $(SRCS:c=o)
 
 all: $(NAME) 
 
-$(NAME): $(OBJS)
+$(NAME): $(OBJS) philo.h
 	$(CC) $(CFLAGS) $(OBJS) -o $@
 
 clean:
