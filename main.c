@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:23 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/03/19 19:47:19 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/03/20 14:46:01 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,12 @@
 void	check(t_table *table)
 {
 	int	i;
+	int	eaten;
 
+	eaten = 0;
 	while (1)
 	{
-		if (table->finished == table->num_philos)
-		{
-			pthread_mutex_lock(&table->access);
-			table->stop = 1;
-			pthread_mutex_unlock(&table->access);	
-			return ;
-		}
+		eaten = 0;
 		i = -1;
 		while (++i < table->num_philos)
 		{
@@ -39,6 +35,23 @@ void	check(t_table *table)
 				pthread_mutex_unlock(&table->access);
 				return ;
 			}
+		}
+		i = -1;
+		while (++i < table->num_philos)
+		{
+			if (table->num_meals_to_eat != -1 && \
+			table->philos[i].meals < table->num_meals_to_eat)
+			{
+				eaten = 1;
+				break ;
+			}
+		}
+		if (!eaten && table->num_meals_to_eat != -1)
+		{
+			pthread_mutex_lock(&table->access);
+			table->stop = 1;
+			pthread_mutex_unlock(&table->access);
+			return ;	
 		}
 	}
 }
@@ -71,17 +84,12 @@ void	*philosopher(void *arg)
 	t_philo *ph;
 
 	ph = (t_philo *) arg;
+	log_status("is thinking", *ph);
 	if (ph->id % 2 == 0)
-	{
-		log_status("is thinking", *ph);
 		usleep(1500);
-	}
 	while (ph->table->stop != 1)
 	{
 		eating(ph);
-		if (ph->table->num_meals_to_eat != -1 && \
-			ph->meals >= ph->table->num_meals_to_eat)
-			return (ph->table->finished++, ph);
 		log_status("is sleeping", *ph);
 		nap(ph->table, ph->table->time_to_sleep);
 		log_status("is thinking", *ph);
