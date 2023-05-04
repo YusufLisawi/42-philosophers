@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omoussao <omoussao@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/10 19:55:39 by omoussao          #+#    #+#             */
-/*   Updated: 2022/03/13 18:33:44 by omoussao         ###   ########.fr       */
+/*   Created: 2023/03/19 13:44:35 by yelaissa          #+#    #+#             */
+/*   Updated: 2023/03/19 13:48:22 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,3 +53,33 @@ void	my_usleep(unsigned long time)
 	while (get_ms() - curr < time)
 		usleep(50);
 }
+
+/* 
+ * ATOI
+ */
+int	ft_atoi(const char *str)
+{
+	int	result;
+	int	sign;
+	int	i;
+
+	result = 0;
+	sign = 1;
+	i = 0;
+	while (str[i] && (str[i] == 32 || (str[i] >= 9 && str[i] <= 13)))
+		i++;
+	if (str[i] == '+' || str[i] == '-')
+	{
+		if (str[i] == '-')
+			sign *= -1;
+		i++;
+	}
+	while (str[i] && str[i] >= 48 && str[i] <= 57)
+	{
+		result *= 10;
+		result += str[i] - 48;
+		i++;
+	}
+	return (result * sign);
+} 
+   
