@@ -6,100 +6,101 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:36 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/03/16 12:55:06 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/04 16:49:47 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long long get_time(void)
+/**
+ * Get the current time in milliseconds using gettimeofday function
+ * @return the current time in milliseconds
+ **/
+long long	get_time(void)
 {
-	struct timeval tv;
+	struct timeval	tv;
+
 	gettimeofday(&tv, NULL);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-int ft_atoi(const char *str)
+/**
+ * Better version of usleep
+ * This function allows a thread to sleep for a certain amount of time,
+ * while checking if the table has been stopped to exit the loop early.
+ * @param table The table struct containing information about the philos.
+ * @param time The amount of time to sleep in milliseconds.
+**/
+void	nap(t_table *table, int time)
 {
-	int result;
-	int sign;
-	int i;
+	long long	current;
+	int			stop;
 
-	result = 0;
-	sign = 1;
-	i = 0;
-	while (str[i] && (str[i] == 32 || (str[i] >= 9 && str[i] <= 13)))
-		i++;
-	if (str[i] == '+' || str[i] == '-')
+	stop = 1;
+	current = get_time();
+	while (stop)
 	{
-		if (str[i] == '-')
-			sign *= -1;
-		i++;
+		pthread_mutex_lock(&table->access);
+		stop = !table->stop;
+		pthread_mutex_unlock(&table->access);
+		if (get_time() - current >= time)
+			break ;
+		usleep(50);
 	}
-	while (str[i] && str[i] >= 48 && str[i] <= 57)
-	{
-		result *= 10;
-		result += str[i] - 48;
-		i++;
-	}
-	return (result * sign);
 }
 
-int	verify_args(int ac, char **av)
-{
-	int i;
-	(void) ac;
-
-	i = 1;
-	while (av[i])
-	{
-		if (ft_atoi(av[i]) <= 0)
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-
-int	init_philos(t_table *table, char **av)
+/**
+ * Initialize the philos struct array with their respective 
+ * IDs, forks, meal counts and last meal time
+ * @param table The main table struct
+ * @return 1 if initialization was successful, 0 otherwise
+ **/
+int	init_philos(t_table *table)
 {
 	int	i;
 
 	i = 0;
-	while (i < ft_atoi(av[1]))
+	while (i < table->num_philos)
 	{
 		if (pthread_mutex_init(&table->forks[i], NULL))
 			return (0);
-		table->philosophers[i].id = i + 1;
-		table->philosophers[i].left_fork = i;
-		table->philosophers[i].right_fork = (i + 1) % ft_atoi(av[1]);
-		table->philosophers[i].meals = 0;
-		table->philosophers[i].last_meal_time = get_time();
-		table->philosophers[i].table = table;
+		table->philos[i].id = i + 1;
+		table->philos[i].left_fork = i;
+		table->philos[i].right_fork = (i + 1) % table->num_philos;
+		table->philos[i].meals = 0;
+		table->philos[i].last_meal_time = get_time();
+		table->philos[i].table = table;
 		i++;
 	}
 	return (1);
 }
 
+/** 
+ * This function initializes the table struct with the number of philos,
+ * their time limits, and allocates memory for the forks and philos.
+ * @param table The table struct to be initialized.
+ * @param av The array of strings containing the program arguments.
+ * @return 1 on success, 0 on failure to allocate memory.
+**/
 int	init_table(t_table *table, char **av)
 {
+	table->stop = 0;
+	table->finished = 0;
 	table->start_time = get_time();
-	table->philosophers = malloc(ft_atoi(av[1]) * sizeof(t_philo));
-	if (!table->philosophers)
-		return (0);
-	table->forks = malloc(ft_atoi(av[1]) * sizeof(pthread_mutex_t));
-	if (!table->forks)
-		return (0);
-	table->num_philosophers = ft_atoi(av[1]);
+	table->num_philos = ft_atoi(av[1]);
 	table->time_to_die = ft_atoi(av[2]);
 	table->time_to_eat = ft_atoi(av[3]);
 	table->time_to_sleep = ft_atoi(av[4]);
+	table->num_meals_to_eat = -1;
 	if (av[5])
 		table->num_meals_to_eat = ft_atoi(av[5]);
-	else
-		table->num_meals_to_eat = -1;
-	table->stop = 0;
-	if (!init_philos(table, av))
+	table->philos = malloc(ft_atoi(av[1]) * sizeof(t_philo));
+	table->forks = malloc(ft_atoi(av[1]) * sizeof(pthread_mutex_t));
+	if (!table->philos || !table->forks)
+		return (0);
+	if (pthread_mutex_init(&table->access, NULL))
+		return (0);
+	if (!init_philos(table))
 		return (0);
 	return (1);
 }
