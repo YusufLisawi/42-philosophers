@@ -3,60 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yelaissa <yelaissa@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:23 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/04 17:02:09 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/04 20:46:06 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	check(t_table *table)
+void	check_stop(t_table *table)
 {
-	int		i;
-	int		eaten;
-	long	check_time;
-
-	eaten = 0;
 	while (1)
 	{
-		eaten = 0;
-		i = -1;
-		while (++i < table->num_philos)
-		{
-			if (table->num_meals_to_eat != -1 && \
-			table->philos[i].meals >= table->num_meals_to_eat)
-				continue ;
-			pthread_mutex_lock(&table->access);
-			check_time = get_time() - table->philos[i].last_meal_time;
-			pthread_mutex_unlock(&table->access);
-			if (check_time >= table->time_to_die)
-			{
-				log_status("died", table->philos[i]);
-				pthread_mutex_lock(&table->access);
-				table->stop = 1;
-				pthread_mutex_unlock(&table->access);
-				return ;
-			}
-		}
-		i = -1;
-		while (++i < table->num_philos)
-		{
-			if (table->num_meals_to_eat != -1 && \
-			table->philos[i].meals < table->num_meals_to_eat)
-			{
-				eaten = 1;
-				break ;
-			}
-		}
-		if (!eaten && table->num_meals_to_eat != -1)
-		{
-			pthread_mutex_lock(&table->access);
-			table->stop = 1;
-			pthread_mutex_unlock(&table->access);
-			return ;	
-		}
+		check_death(table);
+		check_eating(table);
 	}
 }
 
@@ -83,7 +44,7 @@ void	eating(t_philo *ph)
 	pthread_mutex_unlock(&ph->table->forks[ph->right_fork]);
 }
 
-void	*philosopher(void *arg)
+void	*philo_routine(void *arg)
 {
 	t_philo *ph;
 	int		stop;
@@ -114,10 +75,10 @@ int	start_dining(t_table *table)
 	i = -1;
 	while (++i < table->num_philos)
 	{
-		if (pthread_create(&threads[i], NULL, philosopher, &table->philos[i]))
+		if (pthread_create(&threads[i], NULL, philo_routine, &table->philos[i]))
 			return (0);
 	}
-	check(table);
+	check_stop(table);
 	i = -1;
 	while (++i < table->num_philos)
 	{
