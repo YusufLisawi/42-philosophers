@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:23 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/04 17:02:09 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/05 20:54:35 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,14 @@ void	check(t_table *table)
 			pthread_mutex_lock(&table->access);
 			check_time = get_time() - table->philos[i].last_meal_time;
 			pthread_mutex_unlock(&table->access);
-			if (check_time >= table->time_to_die)
+			if (check_time > table->time_to_die)
 			{
 				log_status("died", table->philos[i]);
 				pthread_mutex_lock(&table->access);
 				table->stop = 1;
 				pthread_mutex_unlock(&table->access);
+				if (table->num_philos == 1)
+					pthread_mutex_unlock(&table->forks[table->philos[i].left_fork]);
 				return ;
 			}
 		}
@@ -62,13 +64,9 @@ void	check(t_table *table)
 
 void	eating(t_philo *ph)
 {
+	log_status("is thinking", *ph);
 	pthread_mutex_lock(&ph->table->forks[ph->left_fork]);
 	log_status("has taken a fork", *ph);
-	if (ph->table->num_philos == 1)
-	{
-		nap(ph->table, ph->table->time_to_die);
-		return ;
-	}
 	pthread_mutex_lock(&ph->table->forks[ph->right_fork]);
 	log_status("has taken a fork", *ph);
 	log_status("is eating", *ph);
@@ -79,8 +77,8 @@ void	eating(t_philo *ph)
 	pthread_mutex_lock(&ph->table->access);
 	ph->meals++;
 	pthread_mutex_unlock(&ph->table->access);
-	pthread_mutex_unlock(&ph->table->forks[ph->left_fork]);
 	pthread_mutex_unlock(&ph->table->forks[ph->right_fork]);
+	pthread_mutex_unlock(&ph->table->forks[ph->left_fork]);
 }
 
 void	*philosopher(void *arg)
@@ -89,19 +87,17 @@ void	*philosopher(void *arg)
 	int		stop;
 
 	ph = (t_philo *) arg;
-	log_status("is thinking", *ph);
 	if (ph->id % 2 == 0)
-		usleep(1200);
+		usleep(200);
 	stop = 1;
 	while (stop)
 	{
-		pthread_mutex_lock(&ph->table->access);
-		stop = !ph->table->stop;
-		pthread_mutex_unlock(&ph->table->access);
 		eating(ph);
 		log_status("is sleeping", *ph);
 		nap(ph->table, ph->table->time_to_sleep);
-		log_status("is thinking", *ph);
+		pthread_mutex_lock(&ph->table->access);
+		stop = !ph->table->stop;
+		pthread_mutex_unlock(&ph->table->access);
 	}
 	return (ph);
 }
@@ -116,6 +112,7 @@ int	start_dining(t_table *table)
 	{
 		if (pthread_create(&threads[i], NULL, philosopher, &table->philos[i]))
 			return (0);
+		usleep(50);
 	}
 	check(table);
 	i = -1;
@@ -133,7 +130,10 @@ int	main(int ac, char **av)
 	int		i;
 
 	if (!verify_args(ac, av))
-		return (0);
+	{
+		printf("Error: Invalid arguments\n");
+		return (1);
+	}
 	if (!init_table(&table, av))
 		return (0);
 	start_dining(&table);
