@@ -6,19 +6,14 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:23 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/05 20:54:35 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/05 21:59:49 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	check(t_table *table)
+void	check_stop(t_table *table)
 {
-	int		i;
-	int		eaten;
-	long	check_time;
-
-	eaten = 0;
 	while (1)
 	{
 		eaten = 0;
@@ -81,7 +76,7 @@ void	eating(t_philo *ph)
 	pthread_mutex_unlock(&ph->table->forks[ph->left_fork]);
 }
 
-void	*philosopher(void *arg)
+void	*philo_routine(void *arg)
 {
 	t_philo *ph;
 	int		stop;
@@ -110,11 +105,11 @@ int	start_dining(t_table *table)
 	i = -1;
 	while (++i < table->num_philos)
 	{
-		if (pthread_create(&threads[i], NULL, philosopher, &table->philos[i]))
+		if (pthread_create(&threads[i], NULL, philo_routine, &table->philos[i]))
 			return (0);
 		usleep(50);
 	}
-	check(table);
+	check_stop(table);
 	i = -1;
 	while (++i < table->num_philos)
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yelaissa <yelaissa@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:32 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/03/19 17:27:25 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/04 20:45:54 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,7 @@ int			init_table(t_table *table, char **av);
 void		nap(t_table *table, int time);
 int			ft_atoi(const char *str);
 void		log_status(char *message, t_philo ph);
+void		check_eating(t_table *table);
+void		check_death(t_table *table);
+
 #endif
