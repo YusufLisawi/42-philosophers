@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 20:42:16 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/15 19:58:35 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/15 22:48:20 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,17 @@ int	check_death(t_table *table)
 {
 	long	check_time;
 	int		i;
+	int		meals;
 
 	i = -1;
+	meals = 0;
 	while (++i < table->num_philos)
 	{
+		pthread_mutex_lock(&table->access);
+		meals = table->philos[i].meals;
+		pthread_mutex_unlock(&table->access);
 		if (table->num_meals_to_eat != -1 && \
-		table->philos[i].meals >= table->num_meals_to_eat)
+			meals >= table->num_meals_to_eat)
 			continue ;
 		pthread_mutex_lock(&table->access);
 		check_time = get_time() - table->philos[i].last_meal_time;
@@ -42,13 +47,18 @@ int	check_eating(t_table *table)
 {
 	int	i;
 	int	eaten;
+	int	meals;
 
 	eaten = 0;
+	meals = 0;
 	i = -1;
 	while (++i < table->num_philos)
 	{
+		pthread_mutex_lock(&table->access);
+		meals = table->philos[i].meals;
+		pthread_mutex_unlock(&table->access);
 		if (table->num_meals_to_eat != -1 && \
-		table->philos[i].meals < table->num_meals_to_eat)
+			meals < table->num_meals_to_eat)
 		{
 			eaten = 1;
 			break ;
