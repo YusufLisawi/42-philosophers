@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:23 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/15 19:29:13 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/15 20:00:16 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void	eating(t_philo *ph)
 	if (ph->table->num_philos == 1)
 	{
 		nap(ph->table, ph->table->time_to_die);
+		pthread_mutex_unlock(&ph->table->forks[ph->left_fork]);
 		return ;
 	}
 	pthread_mutex_lock(&ph->table->forks[ph->right_fork]);
