@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 17:29:48 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/03/19 19:03:37 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/15 19:35:54 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	log_status(char *message, t_philo ph)
 {
 	pthread_mutex_lock(&ph.table->access);
 	if (!ph.table->stop && !ph.table->finished)
-		printf("%lld %d %s\n", (get_time() - ph.table->start_time), \
+		printf("%lld %d %s\n", (get_time() - ph.start_time), \
 			ph.id, message);
 	pthread_mutex_unlock(&ph.table->access);
 }

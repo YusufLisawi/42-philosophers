@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:36 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/04 16:49:47 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/15 19:40:02 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	nap(t_table *table, int time)
 		pthread_mutex_unlock(&table->access);
 		if (get_time() - current >= time)
 			break ;
-		usleep(50);
+		usleep(100);
 	}
 }
 
@@ -57,9 +57,11 @@ void	nap(t_table *table, int time)
  **/
 int	init_philos(t_table *table)
 {
-	int	i;
+	int			i;
+	long long	start_time;
 
 	i = 0;
+	start_time = get_time();
 	while (i < table->num_philos)
 	{
 		if (pthread_mutex_init(&table->forks[i], NULL))
@@ -69,6 +71,7 @@ int	init_philos(t_table *table)
 		table->philos[i].right_fork = (i + 1) % table->num_philos;
 		table->philos[i].meals = 0;
 		table->philos[i].last_meal_time = get_time();
+		table->philos[i].start_time = start_time;
 		table->philos[i].table = table;
 		i++;
 	}
@@ -86,7 +89,7 @@ int	init_table(t_table *table, char **av)
 {
 	table->stop = 0;
 	table->finished = 0;
-	table->start_time = get_time();
+	// table->start_time = get_time();
 	table->num_philos = ft_atoi(av[1]);
 	table->time_to_die = ft_atoi(av[2]);
 	table->time_to_eat = ft_atoi(av[3]);
