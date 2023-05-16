@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 20:42:16 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/16 18:22:34 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/16 22:39:47 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,9 @@ int	check_death(t_table *table)
 		pthread_mutex_unlock(&table->access);
 		if (check_time > table->time_to_die)
 		{
-			log_status("died", table->philos[i]);
 			pthread_mutex_lock(&table->access);
+			printf("%lld %d %s\n", get_time() - table->philos[i].start_time, \
+				table->philos[i].id, "died");
 			table->stop = 1;
 			pthread_mutex_unlock(&table->access);
 			return (1);

@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 17:29:48 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/16 19:18:43 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/16 21:19:09 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,6 @@ int	ft_isallnum(char *str)
 	return (1);
 }
 
-/**
- * Convert a string to an integer
- * @param str The string to be converted
- * @return The integer value of the string
- **/
 int	ft_atoi(const char *str)
 {
 	int	result;
@@ -57,12 +52,6 @@ int	ft_atoi(const char *str)
 	return (result * sign);
 }
 
-/**
- * Verify if the arguments passed in the command line are valid
- * @param ac The number of arguments
- * @param av The list of arguments
- * @return 1 if arguments are valid, 0 otherwise
- **/
 int	verify_args(int ac, char **av)
 {
 	int	i;
@@ -83,23 +72,13 @@ int	verify_args(int ac, char **av)
 	return (1);
 }
 
-/**
- * logs the status of the philo to the console with the current time,
- * philosopher ID, and the given message.
- * @param message the message to log_status
- * @param ph the philosopher struct that contains 
- * the philosopher's ID and a pointer to the table struct
-**/
 void	log_status(char *message, t_philo ph)
 {
 	pthread_mutex_lock(&ph.table->access);
-	if (ph.table->stop)
-	{
-		pthread_mutex_unlock(&ph.table->access);
-		return ;
-	}
 	if (!ph.table->stop)
+	{
 		printf("%lld %d %s\n", (get_time() - ph.start_time), \
-			ph.id, message);
+		ph.id, message);
+	}
 	pthread_mutex_unlock(&ph.table->access);
 }

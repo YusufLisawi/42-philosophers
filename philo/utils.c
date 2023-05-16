@@ -6,16 +6,12 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:36 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/16 19:21:17 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/16 21:30:59 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-/**
- * Get the current time in milliseconds using gettimeofday function
- * @return the current time in milliseconds
- **/
 long long	get_time(void)
 {
 	struct timeval	tv;
@@ -24,13 +20,6 @@ long long	get_time(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-/**
- * Better version of usleep
- * This function allows a thread to sleep for a certain amount of time,
- * while checking if the table has been stopped to exit the loop early.
- * @param table The table struct containing information about the philos.
- * @param time The amount of time to sleep in milliseconds.
-**/
 void	nap(t_table *table, int time)
 {
 	long long	current;
@@ -49,12 +38,6 @@ void	nap(t_table *table, int time)
 	}
 }
 
-/**
- * Initialize the philos struct array with their respective 
- * IDs, forks, meal counts and last meal time
- * @param table The main table struct
- * @return 1 if initialization was successful, 0 otherwise
- **/
 int	init_philos(t_table *table)
 {
 	int			i;
@@ -78,13 +61,6 @@ int	init_philos(t_table *table)
 	return (1);
 }
 
-/** 
- * This function initializes the table struct with the number of philos,
- * their time limits, and allocates memory for the forks and philos.
- * @param table The table struct to be initialized.
- * @param av The array of strings containing the program arguments.
- * @return 1 on success, 0 on failure to allocate memory.
-**/
 int	init_table(t_table *table, char **av)
 {
 	table->stop = 0;

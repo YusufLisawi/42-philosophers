@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:23 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/16 19:22:21 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/16 21:40:59 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,15 @@ void	check_stop(t_table *table)
 	}
 }
 
-void	eating(t_philo *ph)
+int	eating(t_philo *ph)
 {
 	pthread_mutex_lock(&ph->table->forks[ph->left_fork]);
 	log_status("has taken a fork", *ph);
 	if (ph->table->num_philos == 1)
 	{
-		nap(ph->table, ph->table->time_to_die);
+		// nap(ph->table, ph->table->time_to_die);
 		pthread_mutex_unlock(&ph->table->forks[ph->left_fork]);
-		return ;
+		return (1);
 	}
 	pthread_mutex_lock(&ph->table->forks[ph->right_fork]);
 	log_status("has taken a fork", *ph);
@@ -45,6 +45,7 @@ void	eating(t_philo *ph)
 	pthread_mutex_unlock(&ph->table->access);
 	pthread_mutex_unlock(&ph->table->forks[ph->left_fork]);
 	pthread_mutex_unlock(&ph->table->forks[ph->right_fork]);
+	return (0);
 }
 
 void	*philo_routine(void *arg)
@@ -55,14 +56,18 @@ void	*philo_routine(void *arg)
 	ph = (t_philo *) arg;
 	log_status("is thinking", *ph);
 	if (ph->id % 2 == 0)
-		nap(ph->table, ph->table->time_to_sleep);
+	{
+		usleep(500);
+		// nap(ph->table, ph->table->time_to_sleep);
+	}
 	stop = 1;
 	while (stop)
 	{
 		pthread_mutex_lock(&ph->table->access);
 		stop = !ph->table->stop;
 		pthread_mutex_unlock(&ph->table->access);
-		eating(ph);
+		if (eating(ph))
+			return (NULL);
 		log_status("is sleeping", *ph);
 		nap(ph->table, ph->table->time_to_sleep);
 		log_status("is thinking", *ph);
