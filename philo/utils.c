@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:36 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/15 22:45:41 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/16 19:21:17 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	nap(t_table *table, int time)
 		pthread_mutex_unlock(&table->access);
 		if (get_time() - current >= time)
 			break ;
-		usleep(100);
+		usleep(90);
 	}
 }
 
@@ -88,7 +88,6 @@ int	init_philos(t_table *table)
 int	init_table(t_table *table, char **av)
 {
 	table->stop = 0;
-	table->finished = 0;
 	table->num_philos = ft_atoi(av[1]);
 	table->time_to_die = ft_atoi(av[2]);
 	table->time_to_eat = ft_atoi(av[3]);

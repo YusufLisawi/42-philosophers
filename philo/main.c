@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:23 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/15 22:45:49 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/16 19:22:21 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	*philo_routine(void *arg)
 	ph = (t_philo *) arg;
 	log_status("is thinking", *ph);
 	if (ph->id % 2 == 0)
-		usleep(500);
+		nap(ph->table, ph->table->time_to_sleep);
 	stop = 1;
 	while (stop)
 	{

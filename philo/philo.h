@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:32 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/15 22:45:28 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/16 19:15:41 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ typedef struct s_table
 	int				time_to_sleep;
 	int				num_meals_to_eat;
 	int				stop;
-	int				finished;
 	pthread_mutex_t	access;
 	pthread_mutex_t	*forks;
 	t_philo			*philos;

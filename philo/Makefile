@@ -1,8 +1,20 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2023/05/16 16:16:51 by yelaissa          #+#    #+#              #
+#    Updated: 2023/05/16 19:00:12 by yelaissa         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = philo
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror -fsanitize=thread -g
+CFLAGS = -Wall -Wextra -Werror #-fsanitize=thread -g 
 
 SRCS = main.c utilities.c utils.c checks.c 
 

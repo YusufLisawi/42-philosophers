@@ -6,11 +6,25 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 17:29:48 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/15 22:23:27 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/16 19:18:43 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	ft_isallnum(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] < 48 || str[i] > 57)
+			return (-1);
+		i++;
+	}
+	return (1);
+}
 
 /**
  * Convert a string to an integer
@@ -62,8 +76,8 @@ int	verify_args(int ac, char **av)
 	i = 1;
 	while (av[i])
 	{
-		if (ft_atoi(av[i]) <= 0)
-			return (0);
+		if (ft_atoi(av[i]) <= 0 || ft_isallnum(av[i]) == -1 || av[0] == 0)
+			return (printf("Error: Incorrect arguments\n"), 0);
 		i++;
 	}
 	return (1);
@@ -79,7 +93,12 @@ int	verify_args(int ac, char **av)
 void	log_status(char *message, t_philo ph)
 {
 	pthread_mutex_lock(&ph.table->access);
-	if (!ph.table->stop && !ph.table->finished)
+	if (ph.table->stop)
+	{
+		pthread_mutex_unlock(&ph.table->access);
+		return ;
+	}
+	if (!ph.table->stop)
 		printf("%lld %d %s\n", (get_time() - ph.start_time), \
 			ph.id, message);
 	pthread_mutex_unlock(&ph.table->access);
