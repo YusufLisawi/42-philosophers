@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:23 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/16 21:40:59 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/17 21:43:28 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int	eating(t_philo *ph)
 	log_status("has taken a fork", *ph);
 	if (ph->table->num_philos == 1)
 	{
-		// nap(ph->table, ph->table->time_to_die);
 		pthread_mutex_unlock(&ph->table->forks[ph->left_fork]);
 		return (1);
 	}
@@ -55,11 +54,6 @@ void	*philo_routine(void *arg)
 
 	ph = (t_philo *) arg;
 	log_status("is thinking", *ph);
-	if (ph->id % 2 == 0)
-	{
-		usleep(500);
-		// nap(ph->table, ph->table->time_to_sleep);
-	}
 	stop = 1;
 	while (stop)
 	{
@@ -85,7 +79,7 @@ int	start_dining(t_table *table)
 	{
 		if (pthread_create(&threads[i], NULL, philo_routine, &table->philos[i]))
 			return (0);
-		usleep(10);
+		usleep(200);
 	}
 	check_stop(table);
 	i = -1;
@@ -103,9 +97,9 @@ int	main(int ac, char **av)
 	int		i;
 
 	if (!verify_args(ac, av))
-		return (0);
+		return (1);
 	if (!init_table(&table, av))
-		return (0);
+		return (1);
 	start_dining(&table);
 	i = 0;
 	while (i < table.num_philos)
@@ -113,7 +107,9 @@ int	main(int ac, char **av)
 		pthread_mutex_destroy(&table.forks[i]);
 		i++;
 	}
-	pthread_mutex_destroy(&table.access);	
-	return (free(table.forks), free(table.philos), 0);
+	pthread_mutex_destroy(&table.access);
+	free(table.forks);
+	free(table.philos);
+	return (0);
 }
  

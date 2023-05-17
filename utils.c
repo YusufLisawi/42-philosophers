@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 15:07:36 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/16 21:30:59 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/17 19:46:10 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	nap(t_table *table, int time)
 		pthread_mutex_unlock(&table->access);
 		if (get_time() - current >= time)
 			break ;
-		usleep(90);
+		usleep(100);
 	}
 }
 
