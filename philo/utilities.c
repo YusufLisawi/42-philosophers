@@ -6,7 +6,7 @@
 /*   By: yelaissa <yelaissa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 17:29:48 by yelaissa          #+#    #+#             */
-/*   Updated: 2023/05/16 21:19:09 by yelaissa         ###   ########.fr       */
+/*   Updated: 2023/05/18 19:40:26 by yelaissa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,15 +58,14 @@ int	verify_args(int ac, char **av)
 
 	if (ac < 5 || ac > 6)
 	{
-		printf("Error: Incorrect arguments\nUsage:\n./philo <num_of_philos> ");
-		printf("<time_to_die> <time_to_eat> <time_to_sleep> [num_of_meals]\n");
+		write(2, "Error: Incorrect arguments\n", 27);
 		return (0);
 	}
 	i = 1;
 	while (av[i])
 	{
 		if (ft_atoi(av[i]) <= 0 || ft_isallnum(av[i]) == -1 || av[0] == 0)
-			return (printf("Error: Incorrect arguments\n"), 0);
+			return (write(2, "Error: Incorrect arguments\n", 27), 0);
 		i++;
 	}
 	return (1);
